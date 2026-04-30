@@ -1,0 +1,245 @@
+{
+  "info": {
+    "_postman_id": "ems-collection-v1",
+    "name": "EventSphere API",
+    "description": "Complete Postman collection for the Event Management System REST API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8080", "type": "string" },
+    { "key": "token", "value": "", "type": "string" },
+    { "key": "event_id", "value": "", "type": "string" },
+    { "key": "registration_id", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/auth/register", "host": ["{{base_url}}"], "path": ["api", "auth", "register"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"Password@123\"\n}"
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": ["pm.test('Status is 201', () => pm.response.to.have.status(201));", "const json = pm.response.json(); if (json.data?.token) { pm.collectionVariables.set('token', json.data.token); }"] }
+          }]
+        },
+        {
+          "name": "Register Admin",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/auth/register", "host": ["{{base_url}}"], "path": ["api", "auth", "register"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Admin User\",\n  \"email\": \"admin@example.com\",\n  \"password\": \"Admin@1234\",\n  \"role\": \"ADMIN\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/api/auth/login", "host": ["{{base_url}}"], "path": ["api", "auth", "login"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"Admin@1234\"\n}"
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": ["pm.test('Status is 200', () => pm.response.to.have.status(200));", "const json = pm.response.json(); if (json.data?.token) { pm.collectionVariables.set('token', json.data.token); pm.collectionVariables.set('user_role', json.data.role); }"] }
+          }]
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get My Profile",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/users/me", "host": ["{{base_url}}"], "path": ["api", "users", "me"] }
+          }
+        },
+        {
+          "name": "Get All Users (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/users", "host": ["{{base_url}}"], "path": ["api", "users"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Events",
+      "item": [
+        {
+          "name": "Get All Events",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/events?page=0&size=10&sortBy=date&sortDir=asc",
+              "host": ["{{base_url}}"],
+              "path": ["api", "events"],
+              "query": [
+                { "key": "page", "value": "0" },
+                { "key": "size", "value": "10" },
+                { "key": "sortBy", "value": "date" },
+                { "key": "sortDir", "value": "asc" },
+                { "key": "category", "value": "Technology", "disabled": true },
+                { "key": "available", "value": "true", "disabled": true },
+                { "key": "search", "value": "tech", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Event by ID",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/api/events/{{event_id}}", "host": ["{{base_url}}"], "path": ["api", "events", "{{event_id}}"] }
+          }
+        },
+        {
+          "name": "Create Event (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/api/events", "host": ["{{base_url}}"], "path": ["api", "events"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Tech Conference 2025\",\n  \"description\": \"Annual technology conference featuring the latest innovations.\",\n  \"date\": \"2025-12-15\",\n  \"time\": \"09:00\",\n  \"location\": \"Convention Center, New York\",\n  \"category\": \"Technology\",\n  \"capacity\": 200\n}"
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": ["const json = pm.response.json(); if (json.data?.id) { pm.collectionVariables.set('event_id', json.data.id); }"] }
+          }]
+        },
+        {
+          "name": "Update Event (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/api/events/{{event_id}}", "host": ["{{base_url}}"], "path": ["api", "events", "{{event_id}}"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Tech Conference 2025 (Updated)\",\n  \"description\": \"Updated description.\",\n  \"date\": \"2025-12-20\",\n  \"time\": \"10:00\",\n  \"location\": \"Grand Hall, New York\",\n  \"category\": \"Technology\",\n  \"capacity\": 300\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Event (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/events/{{event_id}}", "host": ["{{base_url}}"], "path": ["api", "events", "{{event_id}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Registrations",
+      "item": [
+        {
+          "name": "Register for Event",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": { "raw": "{{base_url}}/api/registrations", "host": ["{{base_url}}"], "path": ["api", "registrations"] },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"eventId\": \"{{event_id}}\"\n}"
+            }
+          },
+          "event": [{
+            "listen": "test",
+            "script": { "exec": ["const json = pm.response.json(); if (json.data?.id) { pm.collectionVariables.set('registration_id', json.data.id); }"] }
+          }]
+        },
+        {
+          "name": "Get My Registrations",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{base_url}}/api/registrations/my", "host": ["{{base_url}}"], "path": ["api", "registrations", "my"] }
+          }
+        },
+        {
+          "name": "Cancel Registration",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/registrations/{{registration_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "registrations", "{{registration_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Attendance (Admin)",
+      "item": [
+        {
+          "name": "Get All Registrants",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/attendance/event/{{event_id}}/registrants",
+              "host": ["{{base_url}}"],
+              "path": ["api", "attendance", "event", "{{event_id}}", "registrants"]
+            }
+          }
+        },
+        {
+          "name": "Mark Attended",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/attendance/{{registration_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "attendance", "{{registration_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Attendees",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": {
+              "raw": "{{base_url}}/api/attendance/event/{{event_id}}/attendees",
+              "host": ["{{base_url}}"],
+              "path": ["api", "attendance", "event", "{{event_id}}", "attendees"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

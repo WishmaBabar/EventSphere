@@ -52,16 +52,6 @@ event-management-system/
 
 ## Quick Start
 
-### 1. Prepare MySQL
-
-Create a MySQL database user or use your local root user. The backend can create the database automatically if the user has permission.
-
-Default database URL:
-
-```text
-jdbc:mysql://localhost:3306/eventdb?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
-```
-
 ### 2. Start Backend
 
 ```bash
@@ -75,20 +65,6 @@ On Windows:
 cd backend
 mvnw.cmd spring-boot:run
 ```
-
-Optional environment variables:
-
-```text
-MYSQL_URL=jdbc:mysql://localhost:3306/eventdb?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
-MYSQL_USER=root
-MYSQL_PASSWORD=your_password
-JWT_SECRET=base64_encoded_256_bit_secret
-JWT_EXPIRATION=86400000
-ADMIN_EMAIL=admin@eventsphere.com
-ADMIN_PASSWORD=Admin@1234
-```
-
-The seeded admin account is approved automatically. Regular self-registration creates a `USER` account.
 
 ### 3. Start Frontend
 
@@ -119,18 +95,4 @@ GET    /api/attendance/event/{id}/registrants  ADMIN
 GET    /api/attendance/event/{id}/attendees    ADMIN
 ```
 
-## Verification
 
-Backend:
-
-```bash
-cd backend
-./mvnw test
-```
-
-Frontend:
-
-```bash
-cd frontend
-npm run build
-```

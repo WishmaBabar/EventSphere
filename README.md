@@ -1,6 +1,6 @@
 # EventSphere - Event Management System
 
-A full-stack Event Management System aligned with the project proposal: Spring Boot REST APIs, Spring Security with JWT, MySQL persistence through JPA/Hibernate, Swagger documentation, and a responsive React frontend.
+A full-stack Event Management System : Spring Boot REST APIs, Spring Security with JWT, MySQL persistence through JPA/Hibernate, Swagger documentation, and a responsive React frontend.
 
 ## Project Structure
 

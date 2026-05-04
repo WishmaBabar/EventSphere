@@ -38,7 +38,10 @@ public class EventResponse {
     private Instant updatedAt;
 
     public static EventResponse from(Event event) {
-        int available = event.getCapacity() - event.getRegisteredCount();
+        int openSpots = event.getCapacity() - event.getRegisteredCount();
+        boolean isUpcoming = event.getDate() != null && !event.getDate().isBefore(LocalDate.now());
+        boolean isAvailable = isUpcoming && openSpots > 0;
+
         return EventResponse.builder()
                 .id(event.getId())
                 .title(event.getTitle())
@@ -49,8 +52,8 @@ public class EventResponse {
                 .category(event.getCategory())
                 .capacity(event.getCapacity())
                 .registeredCount(event.getRegisteredCount())
-                .availableSpots(Math.max(0, available))
-                .available(available > 0)
+                .availableSpots(isUpcoming ? Math.max(0, openSpots) : 0)
+                .available(isAvailable)
                 .createdBy(event.getCreatedBy())
                 .createdAt(event.getCreatedAt())
                 .updatedAt(event.getUpdatedAt())

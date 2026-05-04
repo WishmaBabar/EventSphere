@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,7 +40,10 @@ public class RegistrationService {
                 .orElseThrow(() -> new ResourceNotFoundException("User", "email", userEmail));
 
         // Validate event exists
-        eventService.findEventById(eventId);
+        Event event = eventService.findEventById(eventId);
+        if (event.getDate().isBefore(LocalDate.now())) {
+            throw new IllegalStateException("Cannot register for past events");
+        }
 
         // Check for duplicate registration
         if (registrationRepository.existsByUserIdAndEventId(user.getId(), eventId)) {

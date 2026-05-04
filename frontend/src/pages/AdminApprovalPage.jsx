@@ -78,7 +78,8 @@ export default function AdminApprovalPage() {
           <input 
             type="text" 
             placeholder="Search by name or email..."
-            className="w-full pl-12 pr-12 py-3 bg-white/5 border border-white/10 rounded-xl focus:border-indigo-500/50 outline-none transition-all font-medium placeholder:text-slate-600"
+            className="form-input w-full pr-12 py-3 rounded-xl"
+            style={{ background: 'rgba(255,255,255,0.08)', color: '#fff', paddingLeft: '3rem' }}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />

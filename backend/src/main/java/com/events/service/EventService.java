@@ -123,6 +123,7 @@ public class EventService {
             }
             if (Boolean.TRUE.equals(available)) {
                 predicates.add(cb.lessThan(root.get("registeredCount"), root.get("capacity")));
+                predicates.add(cb.greaterThanOrEqualTo(root.get("date"), LocalDate.now()));
             }
             if (search != null && !search.isBlank()) {
                 String normalizedSearch = search.trim().toLowerCase();

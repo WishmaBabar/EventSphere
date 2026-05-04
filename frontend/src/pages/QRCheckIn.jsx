@@ -148,7 +148,7 @@ export default function QRCheckIn() {
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
                       <span className={`status-chip status-${reg.status.toLowerCase()}`}>{reg.status}</span>
                       {reg.status === 'ATTENDED' ? (
-                        <span className="btn btn-ghost btn-sm" aria-label="Already attended">
+                        <span className="btn btn-ghost btn-sm" aria-label="Already attended" style={{ background: 'rgba(255,255,255,0.08)', color: '#000' }}>
                           <CheckCircle2 size={14} /> Checked In
                         </span>
                       ) : (
